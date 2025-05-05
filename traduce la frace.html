@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Traduce la frase</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      padding: 20px;
+      max-width: 800px;
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .sentence-box {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .sentence {
+      font-size: 18px;
+    }
+    textarea {
+      font-size: 16px;
+      padding: 8px;
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      resize: none;
+    }
+    button {
+      background: #4CAF50;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      font-size: 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: block;
+      margin: 30px auto 20px;
+    }
+    button:hover {
+      background: #45a049;
+    }
+    #result {
+      text-align: center;
+      font-size: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Traduce la frase</h1>
+
+<div id="sentences-container"></div>
+
+<button onclick="checkAnswers()">Comprobar</button>
+
+<div id="result"></div>
+
+<script>
+    const allSentences = [
+    ["I am a student.", ["Yo soy un estudiante", "Soy un estudiante", "Soy estudiante"]],
+    ["She is a doctor.", ["Ella es una doctora", "Es doctora", "Es una doctora"]],
+    ["He is tall.", ["Él es alto", "Es alto"]],
+    ["We are friends.", ["Nosotros somos amigos", "Somos amigos"]],
+    ["They are tired.", ["Ellos están cansados", "Están cansados"]],
+    ["You are kind.", ["Tú eres amable", "Eres amable"]],
+    ["It is cold.", ["Hace frío", "Está frío"]],
+    ["The sky is blue.", ["El cielo es azul"]],
+    ["I am happy.", ["Estoy feliz", "Yo estoy feliz"]],
+    ["She is not here.", ["Ella no está aquí", "No está aquí"]],
+    ["He is my brother.", ["Él es mi hermano", "Es mi hermano"]],
+    ["We are not ready.", ["No estamos listos", "Nosotros no estamos listos"]],
+    ["They are students.", ["Ellos son estudiantes", "Son estudiantes"]],
+    ["You are not late.", ["Tú no estás tarde", "No estás tarde"]],
+    ["It is not easy.", ["No es fácil"]],
+    ["Is she okay?", ["¿Ella está bien?", "¿Está bien?"]],
+    ["Are they here?", ["¿Ellos están aquí?", "¿Están aquí?"]],
+    ["Am I wrong?", ["¿Estoy equivocado?", "¿Estoy mal?"]],
+    ["Is he a teacher?", ["¿Él es un maestro?", "¿Es un maestro?", "¿Es maestro?"]],
+    ["Are we on time?", ["¿Estamos a tiempo?", "¿Llegamos a tiempo?"]],
+    ["I am not hungry.", ["No tengo hambre", "No estoy hambriento"]],
+    ["She is my sister.", ["Ella es mi hermana", "Es mi hermana"]],
+    ["He is not busy.", ["Él no está ocupado", "No está ocupado"]],
+    ["We are at home.", ["Estamos en casa", "Nosotros estamos en casa"]],
+    ["They are from Spain.", ["Ellos son de España", "Son de España"]],
+    ["You are strong.", ["Eres fuerte", "Tú eres fuerte"]],
+    ["It is a cat.", ["Es un gato"]],
+    ["The book is new.", ["El libro es nuevo"]],
+    ["I am not sad.", ["No estoy triste"]],
+    ["She is beautiful.", ["Ella es hermosa", "Es hermosa"]],
+    ["He is a good boy.", ["Él es un buen chico", "Es un buen chico"]],
+    ["We are not late.", ["No estamos tarde"]],
+    ["They are very smart.", ["Ellos son muy inteligentes", "Son muy inteligentes"]],
+    ["You are not ready.", ["No estás listo"]],
+    ["Is it hot?", ["¿Hace calor?", "¿Está caliente?"]],
+    ["Is she your friend?", ["¿Ella es tu amiga?", "¿Es tu amiga?"]],
+    ["Am I late?", ["¿Estoy tarde?", "¿Llegué tarde?"]],
+    ["Is he home?", ["¿Él está en casa?", "¿Está en casa?"]],
+    ["Are we friends?", ["¿Somos amigos?", "¿Nosotros somos amigos?"]],
+    ["I am at school.", ["Estoy en la escuela"]],
+    ["She is not tired.", ["Ella no está cansada", "No está cansada"]],
+    ["He is my cousin.", ["Él es mi primo", "Es mi primo"]],
+    ["We are from Mexico.", ["Somos de México"]],
+    ["They are here.", ["Ellos están aquí", "Están aquí"]],
+    ["You are late.", ["Estás tarde"]],
+    ["It is a beautiful day.", ["Es un día hermoso"]],
+    ["The baby is asleep.", ["El bebé está dormido"]],
+    ["I am not busy.", ["No estoy ocupado"]],
+    ["She is nice.", ["Ella es amable", "Es amable"]],
+    ["He is very funny.", ["Él es muy divertido", "Es muy divertido"]],
+    ["We are not home.", ["No estamos en casa"]],
+    ["They are not ready.", ["Ellos no están listos", "No están listos"]],
+    ["You are here.", ["Estás aquí"]],
+    ["It is not good.", ["No es bueno"]],
+    ["The room is clean.", ["El cuarto está limpio"]],
+    ["I am a singer.", ["Yo soy cantante", "Soy un cantante"]],
+    ["She is not a student.", ["Ella no es estudiante", "No es estudiante"]],
+    ["He is friendly.", ["Él es amigable", "Es amigable"]],
+    ["We are on vacation.", ["Estamos de vacaciones"]],
+    ["They are not home.", ["No están en casa"]],
+    ["You are amazing.", ["Eres increíble"]],
+    ["It is my car.", ["Es mi carro", "Es mi coche"]],
+    ["The phone is new.", ["El teléfono es nuevo"]],
+    ["I am not tired.", ["No estoy cansado"]],
+    ["She is clever.", ["Ella es inteligente", "Es lista"]],
+    ["He is not angry.", ["Él no está enojado", "No está enojado"]],
+    ["We are in the park.", ["Estamos en el parque"]],
+    ["They are from Brazil.", ["Son de Brasil"]],
+    ["You are very nice.", ["Eres muy amable"]],
+    ["It is broken.", ["Está roto"]],
+    ["The table is round.", ["La mesa es redonda"]],
+    ["I am your friend.", ["Soy tu amigo"]],
+    ["She is not hungry.", ["No tiene hambre"]],
+    ["He is a good student.", ["Es un buen estudiante"]],
+    ["We are not students.", ["No somos estudiantes"]],
+    ["They are very tall.", ["Son muy altos"]],
+    ["You are very intelligent.", ["Eres muy inteligente"]],
+    ["It is a beautiful place.", ["Es un lugar hermoso"]],
+    ["The house is big.", ["La casa es grande"]],
+    ["I am not home.", ["No estoy en casa"]],
+    ["She is in the kitchen.", ["Ella está en la cocina", "Está en la cocina"]],
+    ["He is at work.", ["Él está en el trabajo", "Está en el trabajo"]],
+    ["We are very happy.", ["Estamos muy felices"]],
+    ["They are angry.", ["Ellos están enojados", "Están enojados"]],
+    ["You are not alone.", ["No estás solo"]],
+    ["It is raining.", ["Está lloviendo"]],
+    ["The child is asleep.", ["El niño está dormido"]],
+    ["I am cold.", ["Tengo frío", "Estoy con frío"]],
+    ["She is early.", ["Ella llegó temprano", "Está temprano"]],
+    ["He is fast.", ["Él es rápido", "Es rápido"]],
+    ["We are excited.", ["Estamos emocionados"]],
+    ["They are outside.", ["Están afuera"]],
+    ["You are at the store.", ["Estás en la tienda"]],
+    ["It is dark.", ["Está oscuro"]],
+    ["The light is on.", ["La luz está encendida"]],
+    ["I am lost.", ["Estoy perdido"]],
+    ["She is busy now.", ["Ella está ocupada ahora", "Está ocupada ahora"]],
+    ["He is in a meeting.", ["Él está en una reunión", "Está en una reunión"]],
+    ["We are inside.", ["Estamos adentro"]],
+    ["They are in the car.", ["Ellos están en el coche", "Están en el auto"]],
+  ];
+  
+    
+    // Selecciona 10 frases aleatorias
+    function getRandomSentences(count) {
+      const shuffled = [...allSentences].sort(() => 0.5 - Math.random());
+      return shuffled.slice(0, count);
+    }
+    
+    const selectedSentences = getRandomSentences(10);
+    const container = document.getElementById('sentences-container');
+    
+    selectedSentences.forEach((item, index) => {
+      const [english, translations] = item;
+      const sentenceBox = document.createElement('div');
+      sentenceBox.className = 'sentence-box';
+    
+      const sentenceEl = document.createElement('div');
+      sentenceEl.className = 'sentence';
+      sentenceEl.innerText = english;
+    
+      const textarea = document.createElement('textarea');
+      textarea.rows = 2;
+      textarea.id = `input-${index}`;
+      textarea.dataset.answers = JSON.stringify(translations.map(t => t.toLowerCase()));
+    
+      sentenceBox.appendChild(sentenceEl);
+      sentenceBox.appendChild(textarea);
+      container.appendChild(sentenceBox);
+    });
+    
+    function normalize(text) {
+      return text
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "") // quita tildes
+        .replace(/[¿?¡!.,;]/g, "") // quita signos
+        .trim();
+    }
+    
+    function checkAnswers() {
+      let correct = 0;
+      let incorrect = 0;
+    
+      selectedSentences.forEach((item, index) => {
+        const textarea = document.getElementById(`input-${index}`);
+        const validAnswers = JSON.parse(textarea.dataset.answers).map(ans => normalize(ans));
+        const userAnswer = normalize(textarea.value);
+    
+        if (validAnswers.includes(userAnswer)) {
+          correct++;
+          textarea.style.borderColor = "green";
+        } else {
+          incorrect++;
+          textarea.style.borderColor = "red";
+        }
+      });
+    
+      document.getElementById('result').innerText =
+        `Correctas: ${correct} | Incorrectas: ${incorrect}`;
+    }
+    </script>
+    
+    
+
+</body>
+</html>
